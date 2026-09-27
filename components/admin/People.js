@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { copyText, smsHref } from '../client';
+import { askConfirm, copyText, smsHref, workerOpenProps } from '../client';
 import { SLOT_LABEL, dayNumber, formatHours } from '@/lib/dates';
-import { linkMessage, people, plural, shiftsWord, workerLink } from './text';
+import { linkMessage, people, plural, shiftsWord } from './text';
 
 export default function People({ data, derived, run, toast, busy }) {
   const [name, setName] = useState('');
@@ -94,7 +94,7 @@ export default function People({ data, derived, run, toast, busy }) {
                 <a className="btn btn-small" href={smsHref(w.phone, linkMessage(data.settings, w.token))}>✉ Pošlji povezavo</a>
               )}
               <button className="btn btn-small" onClick={() => copy(w)}>Kopiraj</button>
-              <a className="btn btn-small" href={workerLink(w.token)} target="_blank" rel="noreferrer">Odpri</a>
+              <a className="btn btn-small" {...workerOpenProps(w.token)}>Odpri</a>
               <button className="btn btn-small" onClick={() => setEditing(w.id)}>Uredi</button>
             </div>
           </div>
@@ -113,7 +113,7 @@ function EditPerson({ worker, run, busy, onClose }) {
     if (d) onClose();
   };
   const remove = async () => {
-    if (!window.confirm(`Res izbrišem ${worker.name}? Izbrišejo se tudi vse prijave in potrjeni termini te osebe.`)) return;
+    if (!(await askConfirm(`Res izbrišem ${worker.name}? Izbrišejo se tudi vse prijave in potrjeni termini te osebe.`, 'Izbriši'))) return;
     const d = await run('DELETE', '/api/admin/workers', { id: worker.id });
     if (d) onClose();
   };

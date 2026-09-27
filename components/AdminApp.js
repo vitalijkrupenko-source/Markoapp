@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { api, smsHref, useRefreshOnFocus, useToast } from './client';
+import { ConfirmHost, api, smsHref, useRefreshOnFocus, useToast } from './client';
 import { addMonths, monthLabel, slotHours } from '@/lib/dates';
 import Schedule from './admin/Schedule';
 import People from './admin/People';
@@ -79,6 +79,7 @@ export default function AdminApp() {
   return (
     <main className="wrap">
       {toastNode}
+      <ConfirmHost />
       <div className="topbar">
         <span className="brand">{data.settings.clinicName}</span>
         <span className="muted small noprint">Razpored dela</span>

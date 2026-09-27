@@ -55,3 +55,7 @@ lib/db.js            libSQL client, local file or Turso, schema auto-created
 ```
 
 See `NAVODILA.md` for the short Slovenian guide for the clinic.
+
+## Phone prototype
+
+`prototype/` bundles the same screens into one HTML page that stores data in a claude.ai artifact's shared database instead of the server, for trying the app on a phone without deploying. `node prototype/build.mjs <out.html> <artifact-url>` builds it. Worker pages are the artifact link plus `#w-<code>`. Outside claude.ai the page falls back to example data kept in the browser.

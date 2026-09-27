@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { api, smsHref } from '../client';
+import { api, askConfirm, features, smsHref } from '../client';
 import {
   SLOTS, SLOT_LABEL, WEEKDAY_HEADERS, dayNumber, daysInMonth, formatHours, isWeekend, longDate,
   capitalize, slotTime, weekdayMon,
@@ -95,7 +95,7 @@ export default function Schedule({ data, derived, run, toast, busy, proposal, se
               <button aria-pressed={!onlyMissing} onClick={() => setOnlyMissing(false)}>Vsi</button>
               <button aria-pressed={onlyMissing} onClick={() => setOnlyMissing(true)}>Manjka</button>
             </div>
-            <button className="btn btn-small" onClick={() => window.print()}>Natisni</button>
+            {features.print && <button className="btn btn-small" onClick={() => window.print()}>Natisni</button>}
           </div>
         </div>
       )}
@@ -163,13 +163,13 @@ function ShiftRow({ shift, data, derived, run, busy, proposal, setProposal }) {
     .sort((a, b) => perWorker.get(a.id).hours - perWorker.get(b.id).hours || a.name.localeCompare(b.name, 'sl'));
 
   const approve = (workerId) => run('POST', '/api/admin/assign', { shiftId: shift.id, workerId });
-  const remove = (workerId) => {
-    if (window.confirm(`Odstranim ${name(workerId)} s tega termina?`)) {
+  const remove = async (workerId) => {
+    if (await askConfirm(`Odstranim ${name(workerId)} s tega termina?`, 'Odstrani')) {
       run('DELETE', '/api/admin/assign', { shiftId: shift.id, workerId });
     }
   };
-  const setNeeded = (needed) => {
-    if (needed === 0 && !window.confirm('Izbrišem ta termin?')) return;
+  const setNeeded = async (needed) => {
+    if (needed === 0 && !(await askConfirm('Izbrišem ta termin?', 'Izbriši'))) return;
     run('PATCH', '/api/admin/shifts', { shiftId: shift.id, needed });
   };
 

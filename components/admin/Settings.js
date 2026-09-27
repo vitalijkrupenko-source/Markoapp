@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { api } from '../client';
+import { api, features } from '../client';
 import { SLOT_LABEL } from '@/lib/dates';
 
 export default function Settings({ data, run, toast, busy, onLogout }) {
@@ -52,7 +52,7 @@ export default function Settings({ data, run, toast, busy, onLogout }) {
         </ol>
       </div>
 
-      <button className="btn" onClick={logout}>Odjava</button>
+      {features.logout && <button className="btn" onClick={logout}>Odjava</button>}
     </>
   );
 }
